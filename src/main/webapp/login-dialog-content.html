@@ -1,0 +1,16 @@
+<!-- HTML content for login dialog -->
+<md-dialog>
+    <md-content>
+        <h3>Login Details</h3>
+
+        <form>
+            <md-text-float label="Handle" ng-model="handle"></md-text-float>
+            <md-text-float label="Name" ng-model="name"></md-text-float>
+        </form>
+    </md-content>
+
+    <div class='md-actions'>
+        <md-button ng-click="cancelLoginDialog()">Cancel</md-button>
+        <md-button ng-click="okayLoginDialog()">OK</md-button>
+    </div>
+</md-dialog>

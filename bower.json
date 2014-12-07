@@ -1,0 +1,17 @@
+{
+  "name": "inout-board",
+  "version": "0.1.0",
+  "description": "Simple In/Out Board Implemented Using AngularJS",
+  "repository": "https://github.com/njacobs5074/inout-board",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "sockjs": "latest",
+    "stomp-websocket": "latest",
+    "lodash": "latest",
+    "hashmap": "^1.1.0",
+    "angular-material": "~0.6.0",
+    "angular": "~1.3.5",
+    "angular-resource": "~1.3.5"
+  }
+}

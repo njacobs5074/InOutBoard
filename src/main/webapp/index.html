@@ -1,0 +1,90 @@
+<!doctype html>
+
+<html>
+<head>
+    <title>In/Out Board</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="bower_components/angular-material/themes/deep-orange-theme.css">
+
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/hammerjs/hammer.js"></script>
+    <script src="bower_components/angular-material/angular-material.js"></script>
+    <script src="bower_components/sockjs/sockjs.min.js"></script>
+    <script src="bower_components/stomp-websocket/lib/stomp.min.js"></script>
+
+    <script src="utils.js"></script>
+    <script src="dialog-controllers.js"></script>
+    <script src="app.js"></script>
+
+</head>
+
+<body ng-app="InOutBoardApp">
+
+<!-- TODO Figure out better styling -->
+<div ng-controller="InOutBoardCtrl" layout-fill style="width: 50%">
+
+    <md-toolbar md-theme="deep-orange" layout-fill>
+        <div class="md-toolbar-tools">
+
+            <span>In/Out Board</span>
+            <span flex></span>
+
+            <md-button class="md-fab" aria-label="Connect" ng-click="showLoginDialog($event)" ng-disabled="userData.userInfo.loggedIn"
+                       ng-controller="InOutBoardLoginDialogController">
+                <!-- TODO - Need to scale icon for smaller screens -->
+                <md-icon icon="images/ic_person_add_white_18dp.png"></md-icon>
+                <md-tooltip>Connect</md-tooltip>
+            </md-button>
+
+            <md-button class="md-fab" aria-label="Disconnect" ng-click="showLogoutDialog($event)" ng-disabled="!userData.userInfo.loggedIn"
+                    ng-controller="InOutBoardLogoutDialogController">
+                <!-- TODO - Need to scale icon for smaller screens -->
+                <md-icon icon="images/ic_person_outline_white_18dp.png"></md-icon>
+                <md-tooltip>Disconnect</md-tooltip>
+            </md-button>
+
+            <md-button class="md-fab" aria-label="Status" ng-disabled="!userData.userInfo.loggedIn">
+                <md-icon icon="images/ic_notifications_on_white_18dp.png"></md-icon>
+                <md-tooltip>Status</md-tooltip>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-content>
+        <div class="inout-users-grid" style="border: thin solid darkorange;">
+            <div layout="row" layout-align="space-around-center" layout-margin layout-fill>
+                <div layout="column" flex="20"><strong>Handle</strong></div>
+                <div layout="column" flex="30"><strong>Name</strong></div>
+                <div layout="column" flex="20"><strong>Status</strong></div>
+                <div layout="column" flex><strong>Comment</strong></div>
+            </div>
+            <div layout="row" layout-align="space-around-center" layout-margin layout-fill ng-repeat="user in userData.inOutUsers">
+                <div layout="column" flex="20">{{user.handle}}</div>
+                <div layout="column" flex="30">{{user.name}}</div>
+                <div layout="column" flex="20">{{user.inOutBoardStatus}}</div>
+                <div layout="column" flex>{{user.comment}}</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 50px;">
+            <b>Show Debug:</b> <input type="checkbox" ng-model="showDebug">
+
+            <div style="border: thin dashed darkorange;" ng-show="showDebug">
+            <pre>
+userData.statusValues = {{userData.statusValues|json}}<br>userData.userInfo = {{userData.userInfo|json}}<br>
+userData.inOutUsers = {{userData.inOutUsers|json}}</pre>
+            </div>
+        </div>
+
+    </md-content>
+
+</div>
+
+
+</body>
+</html>
