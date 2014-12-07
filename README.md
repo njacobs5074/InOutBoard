@@ -15,10 +15,10 @@ Clone this repository.
 
 ### Prerequisites
 
-Java 1.8
-Maven 3
-NPM
-Bower
+* Java 1.8
+* Maven 3
+* NPM
+* Bower
 
 The Maven script runs `bower install` as part of the build (`generate-sources` phase for the interested).
 
