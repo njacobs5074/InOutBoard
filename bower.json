@@ -2,7 +2,7 @@
   "name": "inout-board",
   "version": "0.1.0",
   "description": "Simple In/Out Board Implemented Using AngularJS",
-  "repository": "https://github.com/njacobs5074/inout-board",
+  "repository": "https://github.com/njacobs5074/InOutBoard",
   "license": "MIT",
   "private": true,
   "dependencies": {
