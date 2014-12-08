@@ -124,7 +124,10 @@ public class InOutBoardControllerTest {
 
         // If you consult InOutBoardStatus, you'll see that we use #getDescription() as the JSON representation.
         // Here, we create a String[] that has those values.  Lambdas make this a relatively compact operation.
+        // Note that we also filter out the so-called 'system' status values because the web service does not
+        // return them.
         String[] values = Arrays.asList(InOutBoardStatus.values()).stream()
+                                .filter(status -> !status.isSystemStatus())
                                 .map(InOutBoardStatus::getDescription)
                                 .toArray(String[]::new);
 
