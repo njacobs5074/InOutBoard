@@ -20,6 +20,9 @@ Clone this repository.
 * NPM
 * Bower
 
+### Build
+`maven package`
+
 The Maven script runs `bower install` as part of the build (`generate-sources` phase for the interested).
 
 ### Run the Application
