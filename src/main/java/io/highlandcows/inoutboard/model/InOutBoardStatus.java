@@ -2,6 +2,7 @@ package io.highlandcows.inoutboard.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.HashMap;
@@ -13,8 +14,8 @@ import java.util.HashMap;
 @JsonFormat(shape = JsonFormat.Shape.STRING)
 public enum InOutBoardStatus {
 
-    REGISTERED("Registered"),
-    UNREGISTERED("Unregistered"),
+    REGISTERED("Registered", true),
+    UNREGISTERED("Unregistered", true),
     AVAILABLE("Available"),
     UNAVAILABLE("Unavailable"),
     UNKNOWN("Unknown"),
@@ -33,14 +34,28 @@ public enum InOutBoardStatus {
      */
     private String description;
 
-    private InOutBoardStatus(String description) {
+    /**
+     * Field to differentiate whether can be set by user.
+     * @param description
+     */
+    private boolean systemStatus;
+
+    private InOutBoardStatus(String description, boolean systemStatus) {
         this.description = description;
+        this.systemStatus = systemStatus;
+    }
+
+    private InOutBoardStatus(String description) {
+        this(description, false);
     }
 
     @JsonValue
     public String getDescription() {
         return description;
     }
+
+    @JsonIgnore
+    public boolean isSystemStatus() { return systemStatus; }
 
     @JsonCreator
     public static InOutBoardStatus getInOutBoardStatusByDescription(String description) {

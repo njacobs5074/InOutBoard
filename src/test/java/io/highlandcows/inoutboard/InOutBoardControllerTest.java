@@ -18,10 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.AbstractSubscribableChannel;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -31,7 +29,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -164,7 +161,7 @@ public class InOutBoardControllerTest {
         StompHeaderAccessor userRegistrationHeaders = StompHeaderAccessor.wrap(reply);
         assertEquals("/topic/user-status-update", userRegistrationHeaders.getDestination());
         readAndVerifyUserStatusUpdateMessage(new String((byte[])reply.getPayload(), Charset.forName("UTF-8")),
-                                             TEST_HANDLE1, TEST_NAME1, InOutBoardStatus.REGISTERED.getDescription(),
+                                             TEST_HANDLE1, InOutBoardStatus.REGISTERED.getDescription(),
                                              "");
     }
 
@@ -190,7 +187,7 @@ public class InOutBoardControllerTest {
         StompHeaderAccessor userRegistrationHeaders = StompHeaderAccessor.wrap(reply);
         assertEquals("/topic/user-status-update", userRegistrationHeaders.getDestination());
         readAndVerifyUserStatusUpdateMessage(new String((byte[])reply.getPayload(), Charset.forName("UTF-8")),
-                                             TEST_HANDLE1, TEST_NAME1, InOutBoardStatus.REGISTERED.getDescription(),
+                                             TEST_HANDLE1, InOutBoardStatus.REGISTERED.getDescription(),
                                              "");
        verifyUnregisterSingleUser(TEST_HANDLE1);
 
@@ -202,7 +199,7 @@ public class InOutBoardControllerTest {
         userRegistrationHeaders = StompHeaderAccessor.wrap(reply);
         assertEquals("/topic/user-status-update", userRegistrationHeaders.getDestination());
         readAndVerifyUserStatusUpdateMessage(new String((byte[])reply.getPayload(), Charset.forName("UTF-8")),
-                                             TEST_HANDLE1, TEST_NAME1, InOutBoardStatus.UNREGISTERED.getDescription(),
+                                             TEST_HANDLE1, InOutBoardStatus.UNREGISTERED.getDescription(),
                                              "");
     }
 
@@ -243,32 +240,12 @@ public class InOutBoardControllerTest {
         StompHeaderAccessor stompHeaders = StompHeaderAccessor.wrap(reply);
         assertEquals("/topic/user-status-update", stompHeaders.getDestination());
         readAndVerifyUserStatusUpdateMessage(new String((byte[])reply.getPayload(), Charset.forName("UTF-8")),
-                                             TEST_HANDLE1, TEST_NAME1, InOutBoardStatus.REGISTERED.getDescription(),
-                                             "");
+                                             TEST_HANDLE1, InOutBoardStatus.REGISTERED.getDescription(), "");
 
+        UserStatusUpdateMessage newStatus = new UserStatusUpdateMessage(TEST_HANDLE1, TEST_HANDLE1, InOutBoardStatus.AVAILABLE, "At my desk");
 
-        UserStatusUpdateMessage newStatus = new UserStatusUpdateMessage(TEST_HANDLE1, TEST_NAME1,
-                                                                        InOutBoardStatus.AVAILABLE, "At my desk");
-
-        stompHeaders = StompHeaderAccessor.create(StompCommand.SEND);
-        stompHeaders.setDestination("/app/user-status-update");
-        stompHeaders.setSessionId("0");
-        stompHeaders.setUser(new DummyPrincipal(TEST_HANDLE1));
-        stompHeaders.setSessionAttributes(new HashMap<>(1));
-        org.springframework.messaging.Message<byte[]> message = MessageBuilder.createMessage(new ObjectMapper().writeValueAsBytes(newStatus),
-                                                                                             stompHeaders.getMessageHeaders());
-        brokerChannelInterceptor.setIncludedDestinations("/topic/**");
-        brokerChannelInterceptor.startRecording();
-
-        clientInboundChannel.send(message);
-        reply = brokerChannelInterceptor.awaitMessage(5);
-        assertNotNull("Reply was null", reply);
-
-        stompHeaders = StompHeaderAccessor.wrap(reply);
-        assertEquals("/topic/user-status-update", stompHeaders.getDestination());
-        readAndVerifyUserStatusUpdateMessage(new String((byte[])reply.getPayload(), Charset.forName("UTF-8")),
-                                             TEST_HANDLE1, TEST_NAME1, InOutBoardStatus.AVAILABLE.getDescription(),
-                                             "At my desk");
+        String payload = new String(new ObjectMapper().writeValueAsBytes(newStatus));
+        mockMvc.perform(post("/inoutboard-rest/user-status-update").contentType(contentType).content(payload)).andExpect(status().isOk());
     }
 
     private void verifyRegisterSingleUser(String handle, UserRegistrationMessage userRegistrationMessage) throws Exception {
@@ -282,11 +259,9 @@ public class InOutBoardControllerTest {
         mockMvc.perform(delete("/inoutboard-rest/user/{handle}", handle).contentType(contentType).content(payload)).andExpect(status().isNoContent());
     }
 
-    private UserStatusUpdateMessage readAndVerifyUserStatusUpdateMessage(String json, String handle, String name, String status, String comment) throws Exception {
+    private UserStatusUpdateMessage readAndVerifyUserStatusUpdateMessage(String json, String handle, String status, String comment) throws Exception {
         if (handle != null)
             new JsonPathExpectationsHelper("$.handle").assertValue(json, handle);
-        if (name != null)
-            new JsonPathExpectationsHelper("$.name").assertValue(json, name);
         if (status != null)
             new JsonPathExpectationsHelper("$.inOutBoardStatus").assertValue(json, status);
         if (comment != null)

@@ -4,6 +4,7 @@ import io.highlandcows.inoutboard.model.InOutBoardStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author highlandcows
@@ -60,5 +61,14 @@ public class UserStatusUpdateMessage extends Message {
                 .append(inOutBoardStatus, that.inOutBoardStatus)
                 .append(comment, that.comment)
                 .isEquals();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("handle", handle)
+                .append("name", name)
+                .append("status", inOutBoardStatus)
+                .append("comment", comment).toString();
     }
 }

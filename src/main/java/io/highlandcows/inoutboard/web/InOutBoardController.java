@@ -2,7 +2,6 @@ package io.highlandcows.inoutboard.web;
 
 import io.highlandcows.inoutboard.message.UserRegistrationMessage;
 import io.highlandcows.inoutboard.message.UserStatusUpdateMessage;
-import io.highlandcows.inoutboard.message.UserUnregistrationMessage;
 import io.highlandcows.inoutboard.model.InOutBoardStatus;
 import io.highlandcows.inoutboard.model.InOutBoardUser;
 import io.highlandcows.inoutboard.model.InOutBoardUserDatabase;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.Arrays;
 
 /**
  * Spring MVC controller that handles the REST and STOMP/WebSockets interfaces.
@@ -103,7 +103,7 @@ public class InOutBoardController {
      * Uses HTTP DELETE.
      *
      * @param handle User's handle
-     * @return HTTP respnse for the action
+     * @return HTTP response for the action
      */
     @RequestMapping(value = "/user/{handle}", method = RequestMethod.DELETE)
     public ResponseEntity<?> unregisterUser(@PathVariable("handle") String handle) {
@@ -114,7 +114,7 @@ public class InOutBoardController {
             if (user != null) {
                 inOutBoardUserDatabase.deleteUser(user);
                 broadcastUserStatus(new UserStatusUpdateMessage(user.getHandle(), user.getName(), InOutBoardStatus.UNREGISTERED, ""));
-                logger.info("unregisterUser deleted: " + handle);
+                logger.info("unregisterUser unregistered: " + handle);
             }
         }
         catch (Exception e) {
@@ -129,27 +129,37 @@ public class InOutBoardController {
 
     /**
      * Used by a user to update their status.
-     * Uses STOMP/WebSockets
+     * Uses HTTP
      *
-     * @param userStatusUpdateMessage
-     * @return
+     * @param userStatusUpdateMessage - User's updated status
+     * @return HTTP response for the action
      */
-    @MessageMapping("/user-status-update")
-    public UserStatusUpdateMessage updateUserState(UserStatusUpdateMessage userStatusUpdateMessage) {
+    @RequestMapping(value = "/user-status-update", method = RequestMethod.POST)
+    public ResponseEntity<?> updateUserState(@RequestBody UserStatusUpdateMessage userStatusUpdateMessage) {
+
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
+            logger.info("Updating user status: " + userStatusUpdateMessage);
             InOutBoardUser user = inOutBoardUserDatabase.getUser(userStatusUpdateMessage.getHandle());
             if (user != null) {
-                inOutBoardUserDatabase.updateUser(user, userStatusUpdateMessage.getInOutBoardStatus(),
+                inOutBoardUserDatabase.updateUser(user,
+                                                  userStatusUpdateMessage.getInOutBoardStatus(),
                                                   userStatusUpdateMessage.getComment());
-                return new UserStatusUpdateMessage(user.getHandle(), user.getName(),
-                                                   userStatusUpdateMessage.getInOutBoardStatus(),
-                                                   userStatusUpdateMessage.getComment());
+                broadcastUserStatus(userStatusUpdateMessage);
+            }
+            else {
+                httpStatus = HttpStatus.BAD_REQUEST;
             }
         }
         catch (Exception e) {
             logger.warn("Exception during updateUserState: " + userStatusUpdateMessage, e);
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return null;
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().build(true).toUri());
+
+        return new ResponseEntity<>(null, httpHeaders, httpStatus);
     }
 
     /**
@@ -176,7 +186,9 @@ public class InOutBoardController {
      */
     @RequestMapping(value = "/user-status-values", method = RequestMethod.GET)
     public InOutBoardStatus[] getUserStatusValues() {
-        return InOutBoardStatus.values();
+        return Arrays.asList(InOutBoardStatus.values()).stream()
+                     .filter(status -> !status.isSystemStatus())
+                     .toArray(InOutBoardStatus[]::new);
     }
 
     /**

@@ -1,0 +1,19 @@
+<!-- HTML content for status update dialog -->
+<md-dialog>
+    <md-content>
+        <h3>Update Status</h3>
+        <form>
+            <md-radio-group ng-model="selectedStatus">
+                <md-radio-button ng-repeat="status in statusValues" ng-value="status" aria-label="{{ status }}">
+                    {{ status }}
+                </md-radio-button>
+            </md-radio-group>
+            <md-text-float label="Comment" ng-model="comment"></md-text-float>
+        </form>
+    </md-content>
+
+    <div class='md-actions'>
+        <md-button ng-click="cancelStatusUpdate()">Cancel</md-button>
+        <md-button ng-click="okayStatusUpdate()">OK</md-button>
+    </div>
+</md-dialog>
