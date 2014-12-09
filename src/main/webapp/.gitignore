@@ -1,0 +1,2 @@
+# Make sure we don't store bower_components in Git
+bower_components/
