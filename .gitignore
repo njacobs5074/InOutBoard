@@ -1,0 +1,3 @@
+# Directories to be ignored by git
+.idea/
+target/
