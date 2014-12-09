@@ -26,31 +26,31 @@
 
 <body ng-app="InOutBoardApp">
 
-<!-- TODO Figure out better styling -->
 <div ng-controller="InOutBoardCtrl" layout-fill>
 
     <md-toolbar md-theme="deep-orange" layout-fill>
         <div class="md-toolbar-tools">
 
-            <span>In/Out Board</span>
+            <span>
+                In/Out Board
+                <md-tooltip>{{userData.userInfo.handle ? "Logged in as: " + userData.userInfo.handle : ""}}</md-tooltip>
+            </span>
             <span flex></span>
 
             <md-button class="md-fab" aria-label="Connect" ng-click="showLoginDialog($event)" ng-disabled="userData.userInfo.loggedIn"
                        ng-controller="InOutBoardLoginDialogController">
-                <!-- TODO - Need to scale icon for smaller screens -->
                 <md-icon icon="images/ic_person_add_white_18dp.png"></md-icon>
                 <md-tooltip>Connect</md-tooltip>
             </md-button>
 
             <md-button class="md-fab" aria-label="Status" ng-click="showStatusUpdateDialog($event)" ng-disabled="!userData.userInfo.loggedIn"
-                    ng-controller="InOutBoardStatusUpdateDialogController">
+                       ng-controller="InOutBoardStatusUpdateDialogController">
                 <md-icon icon="images/ic_notifications_on_white_18dp.png"></md-icon>
                 <md-tooltip>Status</md-tooltip>
             </md-button>
 
             <md-button class="md-fab" aria-label="Disconnect" ng-click="showLogoutDialog($event)" ng-disabled="!userData.userInfo.loggedIn"
                        ng-controller="InOutBoardLogoutDialogController">
-                <!-- TODO - Need to scale icon for smaller screens -->
                 <md-icon icon="images/ic_person_outline_white_18dp.png"></md-icon>
                 <md-tooltip>Disconnect</md-tooltip>
             </md-button>
@@ -58,6 +58,14 @@
     </md-toolbar>
 
     <md-content>
+        <div class="ribbon-visibility">
+            <a href="https://github.com/njacobs5074/InOutBoard">
+                <img style="position: absolute; top: 0; right: 0; border: 0;"
+                     src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
+                     alt="Fork me on GitHub"
+                     data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
+            </a>
+        </div>
         <div class="inout-users-grid" style="border: thin solid darkorange;">
             <div layout="row" layout-align="space-around-center" layout-margin layout-fill>
                 <div layout="column" flex="20"><strong>Name</strong></div>
@@ -70,7 +78,9 @@
                 <div layout="column" flex>{{user.comment}}</div>
             </div>
         </div>
-
+        <div class="git-hub-link-visibility">
+            <p>Fork me on <a href="https://github.com/njacobs5074/InOutBoard">GitHub</a></p>
+        </div>
         <div class="debug-visibility" id="debug">
             <b>Debug Info:</b> <input type="checkbox" ng-model="showDebug">
 

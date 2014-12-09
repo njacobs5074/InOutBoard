@@ -23,6 +23,8 @@ import java.util.Arrays;
 
 /**
  * Spring MVC controller that handles the REST and STOMP/WebSockets interfaces.
+ * As per the {code @RequestMapping} annotation, the REST interface is at
+ * <code>/inoutboard-rest</code>.
  *
  * @author highlandcows
  * @since 11/11/14
@@ -54,6 +56,7 @@ public class InOutBoardController {
         try {
             InOutBoardUser user = inOutBoardUserDatabase.getUser(handle);
             if (user != null) {
+                logger.warn("Login attempt on existing user " + handle);
                 httpStatus = HttpStatus.BAD_REQUEST;
             }
             else {
@@ -61,7 +64,7 @@ public class InOutBoardController {
                                           userRegistrationMessage.getName(),
                                           InOutBoardStatus.REGISTERED, "");
                 inOutBoardUserDatabase.addUser(user);
-                logger.info("registerUser added: " + inOutBoardUserDatabase.getUser(user.getHandle()));
+                logger.info("User added: " + inOutBoardUserDatabase.getUser(user.getHandle()));
 
                 broadcastUserStatus(new UserStatusUpdateMessage(user.getHandle(), user.getName(), user.getStatus(), user.getComment()));
             }
@@ -165,7 +168,7 @@ public class InOutBoardController {
     /**
      * Retrieve a snapshot of all of the users and their status.
      *
-     * @return
+     * @return Array containing all of the current users.
      */
     @RequestMapping(value = "/get-all-users", method = RequestMethod.GET)
     public UserStatusUpdateMessage[] getAllUsers() {
@@ -182,7 +185,7 @@ public class InOutBoardController {
     /**
      * Retrieve the list of user statuses via HTTP.
      *
-     * @return
+     * @return Array of all non-system user status values.
      */
     @RequestMapping(value = "/user-status-values", method = RequestMethod.GET)
     public InOutBoardStatus[] getUserStatusValues() {
@@ -193,8 +196,6 @@ public class InOutBoardController {
 
     /**
      * Internal function to send out the status for a given user via STOMP/WebSockets.
-     *
-     * @param userStatusUpdateMessage
      */
     private void broadcastUserStatus(UserStatusUpdateMessage userStatusUpdateMessage) {
         try {

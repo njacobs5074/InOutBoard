@@ -18,7 +18,10 @@ public class WebSocketProdConfig extends AbstractWebSocketMessageBrokerConfigure
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-        stompEndpointRegistry.addEndpoint("/inoutboard-websocks").withSockJS();
+        stompEndpointRegistry.addEndpoint("/inoutboard-websocks").withSockJS()
+                .setStreamBytesLimit(512 * 1024)
+                .setHttpMessageCacheSize(1000)
+                .setDisconnectDelay(30 * 1000);
     }
 
     @Override

@@ -30,6 +30,10 @@ function HandleLoginDialogController($scope, $mdDialog, $mdToast, InOutBoardUser
         InOutUserService.setUserInfo($scope.handle, $scope.name, true);
     };
 
+    var unsuccessfulLogin = function (reason) {
+        $mdToast.show($mdToast.simple().content('Failed to login: ' + reason.statusText + ' (' + reason.status + ')'));;
+    };
+
     $scope.cancelLoginDialog = function () {
         InOutUserService.setUserInfo('', '', false);
         $mdDialog.cancel();
@@ -39,7 +43,7 @@ function HandleLoginDialogController($scope, $mdDialog, $mdToast, InOutBoardUser
         InOutBoardUser.update({handle: $scope.handle}, {
             handle: $scope.handle,
             name: $scope.name
-        }).$promise.then(successfulLogin);
+        }).$promise.then(successfulLogin, unsuccessfulLogin);
 
         $mdDialog.hide();
     }
