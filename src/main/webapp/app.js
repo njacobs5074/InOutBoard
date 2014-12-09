@@ -26,7 +26,6 @@ angular
             }
         };
 
-
         var RECONNECT_TIMEOUT = 3 * 1000;
         var SOCKET_URL = '/inoutboard-websocks';
         var UPDATE_TOPIC = '/topic/user-status-update';
@@ -70,24 +69,20 @@ angular
     }])
     .service('InOutUserService', ['$rootScope', 'InOutBoardStatusValues', 'InOutBoardUsers', 'InOutUpdateService', function ($rootScope, InOutBoardStatusValues, InOutBoardUsers, InOutUpdateService) {
 
-        var userData = {
-            userInfo: {handle: '', name: '', loggedIn: false},
-            statusValues: {},
-            inOutUsers: []
-        };
-
         var service = {
             EVENT_ID: 'userData.update',
 
-            // Store the data in the root scope so that it is available to all UI controllers.
-            getUserData: function () {
-                return userData;
+            userData: {
+                userInfo: {handle: '', name: '', inOutBoardStatus: '', loggedIn: false},
+                statusValues: {},
+                inOutUsers: []
             },
 
             setUserInfo: function (handle, name, loggedIn) {
-                userData.userInfo.handle = handle;
-                userData.userInfo.name = name;
-                userData.userInfo.loggedIn = loggedIn;
+                service.userData.userInfo.handle = handle;
+                service.userData.userInfo.name = name;
+                service.userData.userInfo.loggedIn = loggedIn;
+                service.userData.userInfo.inOutBoardStatus = loggedIn ? 'Registered' : 'Unregistered';
 
                 $rootScope.$broadcast(service.EVENT_ID);
             }
@@ -100,13 +95,13 @@ angular
 
             // Load the existing list of users into our model.
             InOutBoardUsers.query(function (data) {
-                userData.inOutUsers = data;
+                service.userData.inOutUsers = data;
             });
 
             // Initialize the list of status values from the server.  Again, we use the
             // #query interface because it handles arrays automatically for us.
             InOutBoardStatusValues.query(function (data) {
-                userData.statusValues = data;
+                service.userData.statusValues = data;
             });
 
             // Register to receive messages - This implementation is tied
@@ -119,19 +114,24 @@ angular
                 // based on the 'handle' field, we either unregister or update it as
                 // specified by the 'inOutBoardStatus' field.
                 var foundUser = false;
-                for (var i = 0; i < userData.inOutUsers.length; i++) {
+                for (var i = 0; i < service.userData.inOutUsers.length; i++) {
 
-                    if (userData.inOutUsers[i].handle === message.handle) {
+                    if (service.userData.inOutUsers[i].handle === message.handle) {
 
                         if (message.inOutBoardStatus === 'Unregistered') {
                             console.log('Removing ' + message.handle);
-                            userData.inOutUsers.remove(i);
+                            service.userData.inOutUsers.remove(i);
                         }
                         else {
                             console.log('Updating ' + message.handle);
-                            userData.inOutUsers[i].inOutBoardStatus = message.inOutBoardStatus;
-                            userData.inOutUsers[i].name = message.name;
-                            userData.inOutUsers[i].comment = message.comment;
+                            service.userData.inOutUsers[i].inOutBoardStatus = message.inOutBoardStatus;
+                            service.userData.inOutUsers[i].name = message.name;
+                            service.userData.inOutUsers[i].comment = message.comment;
+
+                            // Keep track of our own status this way.
+                            if (message.handle === service.userData.userInfo.handle) {
+                                service.userData.userInfo.inOutBoardStatus = message.inOutBoardStatus;
+                            }
                         }
 
                         foundUser = true;
@@ -143,7 +143,7 @@ angular
                 if (!foundUser) {
                     if (message.inOutBoardStatus !== 'Unregistered') {
                         console.log('Adding ' + message.handle);
-                        userData.inOutUsers.push(message);
+                        service.userData.inOutUsers.push(message);
                     }
                 }
 
@@ -178,9 +178,9 @@ angular
 
         // Listen for updates from our InOutUserService and forward those to our view model.
         $scope.$on(InOutUserService.EVENT_ID, function () {
-            $scope.userData = InOutUserService.getUserData();
+            $scope.userData = InOutUserService.userData;
         });
 
         // Initialize our view model.
-        $scope.userData = InOutUserService.getUserData();
+        $scope.userData = InOutUserService.userData;
     }]);

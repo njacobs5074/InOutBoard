@@ -1,31 +1,39 @@
 /* app css stylesheet */
 
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
-}
-
-.menu:before {
-  content: "[";
-}
-
-.menu:after {
-  content: "]";
-}
-
-.menu > li {
-  display: inline;
-}
-
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
-}
-
-.menu > li:nth-child(1):before {
-  content: "";
+html, body {
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
   padding: 0;
 }
 
+#debug {
+  margin-top: 50px;
+}
+
+/* Turn this on for the debug panel in the main page. */
+.debug-visibility {
+  visibility: visible;
+}
+
+@media screen and (max-width: 520px) {
+  html, body {
+    font-size: 12px;
+  }
+
+  body {
+  }
+
+  .ribbon-visibility {
+    visibility: hidden;
+  }
+
+  .git-hub-link-visibility {
+    visibility: visible;
+  }
+
+  h1.title {
+    font-size: 27px;
+    margin-top: 15px;
+  }
+}

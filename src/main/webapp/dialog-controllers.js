@@ -63,7 +63,7 @@ function InOutBoardLogoutDialogController($scope, $mdDialog, $mdToast, InOutBoar
             .cancel('Cancel');
 
         $mdDialog.show(confirm).then(function () {
-            InOutBoardUser.delete({handle: InOutUserService.getUserData().userInfo.handle}, function () {
+            InOutBoardUser.delete({handle: InOutUserService.userData.userInfo.handle}, function () {
                 InOutUserService.setUserInfo('', '', false);
                 $mdToast.show($mdToast.simple().content('Logged out'));
             });
@@ -91,10 +91,10 @@ function InOutBoardStatusUpdateDialogController($scope, $mdDialog, InOutUserServ
 
 function HandleStatusUpdateDialogController($scope, $mdDialog, $mdToast, InOutUserService, InOutBoardUserStatus) {
 
-    $scope.statusValues = InOutUserService.getUserData().statusValues;
+    $scope.statusValues = InOutUserService.userData.statusValues;
 
     var successfulUpdate = function () {
-        $mdToast.show($mdToast.simple().content('Updated status to: ' + InOutUserService.getUserData().userInfo.inOutBoardStatus));
+        $mdToast.show($mdToast.simple().content('Updated status to: ' + InOutUserService.userData.userInfo.inOutBoardStatus));
     };
 
     $scope.cancelStatusUpdate = function () {
@@ -103,8 +103,8 @@ function HandleStatusUpdateDialogController($scope, $mdDialog, $mdToast, InOutUs
 
     $scope.okayStatusUpdate = function () {
         InOutBoardUserStatus.save({
-            handle: InOutUserService.getUserData().userInfo.handle,
-            name: InOutUserService.getUserData().userInfo.name,
+            handle: InOutUserService.userData.userInfo.handle,
+            name: InOutUserService.userData.userInfo.name,
             inOutBoardStatus: $scope.selectedStatus,
             comment: $scope.comment
         }).$promise.then(successfulUpdate);

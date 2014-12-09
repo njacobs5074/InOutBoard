@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="bower_components/angular-material/themes/deep-orange-theme.css">
+    <link rel="stylesheet" href="assets/inoutboard.css">
 
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -26,7 +27,7 @@
 <body ng-app="InOutBoardApp">
 
 <!-- TODO Figure out better styling -->
-<div ng-controller="InOutBoardCtrl" layout-fill style="width: 75%">
+<div ng-controller="InOutBoardCtrl" layout-fill>
 
     <md-toolbar md-theme="deep-orange" layout-fill>
         <div class="md-toolbar-tools">
@@ -41,17 +42,17 @@
                 <md-tooltip>Connect</md-tooltip>
             </md-button>
 
-            <md-button class="md-fab" aria-label="Disconnect" ng-click="showLogoutDialog($event)" ng-disabled="!userData.userInfo.loggedIn"
-                    ng-controller="InOutBoardLogoutDialogController">
-                <!-- TODO - Need to scale icon for smaller screens -->
-                <md-icon icon="images/ic_person_outline_white_18dp.png"></md-icon>
-                <md-tooltip>Disconnect</md-tooltip>
-            </md-button>
-
             <md-button class="md-fab" aria-label="Status" ng-click="showStatusUpdateDialog($event)" ng-disabled="!userData.userInfo.loggedIn"
                     ng-controller="InOutBoardStatusUpdateDialogController">
                 <md-icon icon="images/ic_notifications_on_white_18dp.png"></md-icon>
                 <md-tooltip>Status</md-tooltip>
+            </md-button>
+
+            <md-button class="md-fab" aria-label="Disconnect" ng-click="showLogoutDialog($event)" ng-disabled="!userData.userInfo.loggedIn"
+                       ng-controller="InOutBoardLogoutDialogController">
+                <!-- TODO - Need to scale icon for smaller screens -->
+                <md-icon icon="images/ic_person_outline_white_18dp.png"></md-icon>
+                <md-tooltip>Disconnect</md-tooltip>
             </md-button>
         </div>
     </md-toolbar>
@@ -59,21 +60,19 @@
     <md-content>
         <div class="inout-users-grid" style="border: thin solid darkorange;">
             <div layout="row" layout-align="space-around-center" layout-margin layout-fill>
-                <div layout="column" flex="20"><strong>Handle</strong></div>
-                <div layout="column" flex="30"><strong>Name</strong></div>
-                <div layout="column" flex="30"><strong>Status</strong></div>
+                <div layout="column" flex="20"><strong>Name</strong></div>
+                <div layout="column" flex="20"><strong>Status</strong></div>
                 <div layout="column" flex><strong>Comment</strong></div>
             </div>
             <div layout="row" layout-align="space-around-center" layout-margin layout-fill ng-repeat="user in userData.inOutUsers">
-                <div layout="column" flex="20">{{user.handle}}</div>
-                <div layout="column" flex="30">{{user.name}}</div>
-                <div layout="column" flex="30">{{user.inOutBoardStatus}}</div>
+                <div layout="column" flex="20">{{user.name}} ({{user.handle}})</div>
+                <div layout="column" flex="20">{{user.inOutBoardStatus}}</div>
                 <div layout="column" flex>{{user.comment}}</div>
             </div>
         </div>
 
-        <div style="margin-top: 50px;">
-            <b>Show Debug:</b> <input type="checkbox" ng-model="showDebug">
+        <div class="debug-visibility" id="debug">
+            <b>Debug Info:</b> <input type="checkbox" ng-model="showDebug">
 
             <div style="border: thin dashed darkorange;" ng-show="showDebug">
             <pre>
