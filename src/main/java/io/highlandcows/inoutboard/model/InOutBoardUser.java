@@ -3,6 +3,8 @@ package io.highlandcows.inoutboard.model;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.time.LocalDateTime;
+
 /**
  * POJO to represent an in/out board user.
  *
@@ -13,17 +15,19 @@ public class InOutBoardUser {
     private String handle;
     private String name;
     private InOutBoardStatus status;
+    private LocalDateTime lastUpdated;
     private String comment;
 
-    public InOutBoardUser(String handle, String name, InOutBoardStatus status, String comment) {
+    public InOutBoardUser(String handle, String name, InOutBoardStatus status, LocalDateTime lastUpdated, String comment) {
         this.handle = handle;
         this.name = name;
         this.status = status;
+        this.lastUpdated = lastUpdated;
         this.comment = StringUtils.isBlank(comment) ? "" : comment;
     }
 
     public InOutBoardUser(String handle, String name) {
-        this(handle, name, InOutBoardStatus.UNKNOWN, "");
+        this(handle, name, InOutBoardStatus.UNKNOWN, LocalDateTime.now(), "");
     }
 
     public InOutBoardUser(String handle) {
@@ -54,6 +58,14 @@ public class InOutBoardUser {
         this.status = status;
     }
 
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     public String getComment() {
         return comment;
     }
@@ -81,6 +93,7 @@ public class InOutBoardUser {
                 .append("handle", handle)
                 .append("name", name)
                 .append("status", status)
+                .append("lastUpdate", lastUpdated)
                 .append("comment", comment).toString();
     }
 

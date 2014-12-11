@@ -7,25 +7,13 @@ import io.highlandcows.inoutboard.config.UnregisterMessageHandlersConfig;
 import io.highlandcows.inoutboard.config.WebSocketTestConfig;
 import io.highlandcows.inoutboard.message.UserRegistrationMessage;
 import io.highlandcows.inoutboard.message.UserStatusUpdateMessage;
-import io.highlandcows.inoutboard.message.UserUnregistrationMessage;
 import io.highlandcows.inoutboard.model.InOutBoardStatus;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.AbstractSubscribableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.JsonPathExpectationsHelper;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -34,14 +22,11 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
  * Test the functionality of the {@link io.highlandcows.inoutboard.web.InOutBoardController} using
@@ -59,60 +44,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
         UnregisterMessageHandlersConfig.class
 })
 @WebAppConfiguration
-public class InOutBoardControllerTest {
-
-    private static final String TEST_HANDLE1 = "njacobs5074";
-    private static final String TEST_NAME1 = "Nick Jacobs";
-    private static final String TEST_HANDLE2 = "THX1138";
-    private static final String TEST_NAME2 = "George Lucas";
-
-    @Autowired
-    private AbstractSubscribableChannel clientInboundChannel;
-
-    @Autowired
-    private AbstractSubscribableChannel brokerChannel;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    EmbeddedDatabase embeddedDatabase;
-
-    private MediaType contentType;
-
-    private MockMvc mockMvc;
-
-    private TestChannelInterceptor brokerChannelInterceptor;
-
-    // Check to make sure that our test context has a JSON converter provided
-    // as part of the Spring MVC environment.
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Autowired
-    void checkForJSONConverter(HttpMessageConverter<?>[] converters) {
-        assertNotNull("JSON message converter is null",
-                      Arrays.asList(converters).stream()
-                            .filter(httpMessageConverter -> httpMessageConverter instanceof MappingJackson2HttpMessageConverter)
-                            .findAny().get());
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        mockMvc = webAppContextSetup(webApplicationContext).build();
-
-        brokerChannelInterceptor = new TestChannelInterceptor(false);
-        brokerChannel.addInterceptor(brokerChannelInterceptor);
-
-        contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-                                    MediaType.APPLICATION_JSON.getSubtype(),
-                                    Charset.forName("utf8"));
-    }
-
-    @After
-    public void cleanUp() throws Exception {
-        embeddedDatabase.getConnection().createStatement().execute("delete from inout_board_user");
-        brokerChannelInterceptor.stopRecording();
-        brokerChannelInterceptor.setIncludedDestinations("");
-    }
+public class InOutBoardControllerTest extends AbstractControllerTest {
 
     /**
      * Test retrieving all of the status values.  Used by client to initialize UI.
@@ -249,27 +181,5 @@ public class InOutBoardControllerTest {
 
         String payload = new String(new ObjectMapper().writeValueAsBytes(newStatus));
         mockMvc.perform(post("/inoutboard-rest/user-status-update").contentType(contentType).content(payload)).andExpect(status().isOk());
-    }
-
-    private void verifyRegisterSingleUser(String handle, UserRegistrationMessage userRegistrationMessage) throws Exception {
-        String payload = new String(new ObjectMapper().writeValueAsBytes(userRegistrationMessage));
-        mockMvc.perform(put("/inoutboard-rest/user/{handle}", handle).contentType(contentType).content(payload)).andExpect(status().isCreated());
-
-    }
-
-    private void verifyUnregisterSingleUser(String handle) throws Exception {
-        String payload = new String(new ObjectMapper().writeValueAsBytes(new UserUnregistrationMessage(handle)));
-        mockMvc.perform(delete("/inoutboard-rest/user/{handle}", handle).contentType(contentType).content(payload)).andExpect(status().isNoContent());
-    }
-
-    private UserStatusUpdateMessage readAndVerifyUserStatusUpdateMessage(String json, String handle, String status, String comment) throws Exception {
-        if (handle != null)
-            new JsonPathExpectationsHelper("$.handle").assertValue(json, handle);
-        if (status != null)
-            new JsonPathExpectationsHelper("$.inOutBoardStatus").assertValue(json, status);
-        if (comment != null)
-            new JsonPathExpectationsHelper("$.comment").assertValue(json, comment);
-
-        return new ObjectMapper().readValue(json, UserStatusUpdateMessage.class);
     }
 }

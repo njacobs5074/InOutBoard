@@ -16,6 +16,8 @@ public interface InOutBoardUserDatabase {
 
     void updateUser(InOutBoardUser user, InOutBoardStatus inOutBoardStatus, String comment);
 
+    void updateLastUpdated(InOutBoardUser user);
+
     InOutBoardUser getUser(String userHandle);
 
     int getNumberOfUsers();

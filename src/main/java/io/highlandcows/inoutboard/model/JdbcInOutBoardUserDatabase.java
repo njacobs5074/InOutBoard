@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -32,9 +34,10 @@ public class JdbcInOutBoardUserDatabase implements InOutBoardUserDatabase {
                                                 Integer.class, user.getHandle());
         Validate.isTrue(count == 0, "Error: User %s already exists", user);
 
-        jdbcTemplate.update("insert into inout_board_user (user_handle, user_name, status) values (?, ?, ?)",
-                            user.getHandle(), user.getName(), InOutBoardStatus.REGISTERED.toString());
+        jdbcTemplate.update("insert into inout_board_user (user_handle, user_name, last_updated, status) values (?, ?, ?, ?)",
+                            user.getHandle(), user.getName(), Timestamp.valueOf(user.getLastUpdated()), InOutBoardStatus.REGISTERED.toString());
     }
+
 
     @Override
     public void deleteUser(InOutBoardUser user) {
@@ -53,16 +56,28 @@ public class JdbcInOutBoardUserDatabase implements InOutBoardUserDatabase {
                                                 Integer.class, user.getHandle());
         Validate.isTrue(count == 1, "Error: User %s does not exist", user);
 
-        jdbcTemplate.update("update inout_board_user set status = ?, comment = ? where user_handle = ?",
-                            inOutBoardStatus.toString(), comment, user.getHandle());
+        jdbcTemplate.update("update inout_board_user set status = ?, last_updated = ?, comment = ? where user_handle = ?",
+                            inOutBoardStatus.toString(), Timestamp.valueOf(LocalDateTime.now()), comment, user.getHandle());
+    }
+
+
+    @Override
+    public void updateLastUpdated(InOutBoardUser user) {
+        Validate.notNull(user, "Req'd argument `user' is null");
+        int count = jdbcTemplate.queryForObject("select count(*) from inout_board_user where user_handle = ?",
+                                                Integer.class, user.getHandle());
+        Validate.isTrue(count == 1, "Error: User %s does not exist", user);
+
+        jdbcTemplate.update("update inout_board_user set last_updated = ? where user_handle = ?",
+                            Timestamp.valueOf(LocalDateTime.now()), user.getHandle());
     }
 
     @Override
-    public InOutBoardUser getUser(String userHandle)  {
+    public InOutBoardUser getUser(String userHandle) {
         Validate.notBlank(userHandle, "Req'd argument `handle' is null/empty");
 
         try {
-            return jdbcTemplate.queryForObject("select user_handle, user_name, status, comment from inout_board_user " +
+            return jdbcTemplate.queryForObject("select user_handle, user_name, status, last_updated, comment from inout_board_user " +
                                                "where user_handle = ?",
                                                new Object[]{userHandle},
                                                new InOutBoardUserMapper());
@@ -79,7 +94,7 @@ public class JdbcInOutBoardUserDatabase implements InOutBoardUserDatabase {
 
     @Override
     public Collection<InOutBoardUser> getAllUsers() {
-        return jdbcTemplate.query("select user_handle, user_name, status, comment from inout_board_user",
+        return jdbcTemplate.query("select user_handle, user_name, status, last_updated, comment from inout_board_user",
                                   new InOutBoardUserMapper());
     }
 
@@ -89,6 +104,7 @@ public class JdbcInOutBoardUserDatabase implements InOutBoardUserDatabase {
             return new InOutBoardUser(resultSet.getString("user_handle"),
                                       resultSet.getString("user_name"),
                                       InOutBoardStatus.valueOf(resultSet.getString("status")),
+                                      resultSet.getTimestamp("last_updated").toLocalDateTime(),
                                       resultSet.getString("comment"));
         }
     }

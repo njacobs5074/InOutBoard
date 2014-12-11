@@ -27,6 +27,6 @@ public class WebSocketProdConfig extends AbstractWebSocketMessageBrokerConfigure
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic", "/queue");
+        registry.enableSimpleBroker("/topic/", "/queue/");
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
@@ -62,7 +63,7 @@ public class InOutBoardController {
             else {
                 user = new InOutBoardUser(handle,
                                           userRegistrationMessage.getName(),
-                                          InOutBoardStatus.REGISTERED, "");
+                                          InOutBoardStatus.REGISTERED, LocalDateTime.now(), "");
                 inOutBoardUserDatabase.addUser(user);
                 logger.info("User added: " + inOutBoardUserDatabase.getUser(user.getHandle()));
 

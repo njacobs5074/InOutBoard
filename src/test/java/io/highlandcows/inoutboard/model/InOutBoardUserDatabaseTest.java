@@ -2,7 +2,6 @@ package io.highlandcows.inoutboard.model;
 
 import io.highlandcows.inoutboard.config.DatabaseConfig;
 import io.highlandcows.inoutboard.config.InOutBoardServerTestConfig;
-import io.highlandcows.inoutboard.config.WebSocketTestConfig;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
