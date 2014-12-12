@@ -67,21 +67,10 @@ public class PingPongMessageControllerTest extends AbstractControllerTest {
         // database.
         verifyRegisterSingleUser(TEST_HANDLE1, new UserRegistrationMessage(TEST_HANDLE1, TEST_NAME1));
 
-        ResultSet rs = null;
         LocalDateTime lastUpdatedBefore, lastUpdatedAfter;
 
         // Fetch the last_updated timestamp directly from the database so that we can compare it later on.
-        try {
-            rs = embeddedDatabase.getConnection().createStatement().executeQuery(
-                    "select last_updated from inout_board_user where user_handle = '" + TEST_HANDLE1 + "'");
-            assertTrue("Expected record", rs.next());
-            lastUpdatedBefore = rs.getTimestamp("last_updated").toLocalDateTime();
-            assertNotNull("Expected last_updated to be non-null", lastUpdatedBefore);
-        }
-        finally {
-            if (rs != null)
-                rs.close();
-        }
+        lastUpdatedBefore = getLastUpdated(TEST_HANDLE1);
 
         // Wait a short interval and then send a response back to the server.
         Thread.sleep(100);
@@ -99,18 +88,8 @@ public class PingPongMessageControllerTest extends AbstractControllerTest {
         Thread.sleep(100);
 
         // Check the database. The last_updated timestamp column should've been updated.
-        try {
-            rs = embeddedDatabase.getConnection().createStatement().executeQuery(
-                    "select last_updated from inout_board_user where user_handle = '" + TEST_HANDLE1 + "'");
-            assertTrue("Expected record", rs.next());
-            lastUpdatedAfter = rs.getTimestamp("last_updated").toLocalDateTime();
-            assertNotNull("Expected last_updated to be non-null", lastUpdatedAfter);
-            assertTrue("Expected last_updated to have changed", lastUpdatedAfter.isAfter(lastUpdatedBefore));
-        }
-        finally {
-            if (rs != null)
-                rs.close();
-        }
+        lastUpdatedAfter = getLastUpdated(TEST_HANDLE1);
+        assertTrue("Expected last_updated to have changed", lastUpdatedAfter.isAfter(lastUpdatedBefore));
     }
 
     private void readAndVerifyPingMessage(String json) throws Exception {
@@ -119,4 +98,18 @@ public class PingPongMessageControllerTest extends AbstractControllerTest {
         // TODO - Figure out how to handle the $.time field
     }
 
+    // Utility function to retrieve the last_updated field from the database for a specified user.
+    private LocalDateTime getLastUpdated(String handle) throws Exception {
+        try (ResultSet rs = embeddedDatabase
+                .getConnection()
+                .createStatement()
+                .executeQuery(String.format("select last_updated from inout_board_user where user_handle = '%s'", handle))) {
+
+            assertTrue(String.format("Expected record for user_handle = %s", handle), rs.next());
+            LocalDateTime lastUpdated = rs.getTimestamp("last_updated").toLocalDateTime();
+            assertNotNull("Expected last_updated to be non-null", lastUpdated);
+
+            return lastUpdated;
+        }
+    }
 }

@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.springframework.test.util.JsonPathExpectationsHelper;
 
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  * Test JSON serialization of messages.  Import because the client code assumes these formats.
@@ -38,13 +40,15 @@ public class JSONSerializationTest {
 
     @Test
     public void testUserStatusUpdateJSONSerialization() throws Exception {
-        UserStatusUpdateMessage msg = new UserStatusUpdateMessage("ABCD", "TEST NAME", InOutBoardStatus.AVAILABLE, "At my desk");
+        LocalDateTime now = LocalDateTime.now();
+        UserStatusUpdateMessage msg = new UserStatusUpdateMessage("ABCD", "TEST NAME", InOutBoardStatus.AVAILABLE, "At my desk", now);
         String json = new String(new ObjectMapper().writeValueAsBytes(msg), Charset.forName("UTF-8"));
         new JsonPathExpectationsHelper("$.type").assertValue(json, UserStatusUpdateMessage.class.getSimpleName());
         new JsonPathExpectationsHelper("$.handle").assertValue(json, "ABCD");
         new JsonPathExpectationsHelper("$.name").assertValue(json, "TEST NAME");
         new JsonPathExpectationsHelper("$.inOutBoardStatus").assertValue(json, "Available");
         new JsonPathExpectationsHelper("$.comment").assertValue(json, "At my desk");
+        new JsonPathExpectationsHelper("$.lastUpdated").assertValue(json, now.toInstant(ZoneOffset.UTC).toEpochMilli());
     }
 
     @Test

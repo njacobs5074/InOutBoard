@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="bower_components/angular-material/themes/deep-orange-theme.css">
-    <link rel="stylesheet" href="assets/inoutboard.css">
+    <link rel="stylesheet" href="inoutboard.css">
 
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -68,14 +68,19 @@
         </div>
         <div class="inout-users-grid" style="border: thin solid darkorange;">
             <div layout="row" layout-align="space-around-center" layout-margin layout-fill>
-                <div layout="column" flex="20"><strong>Name</strong></div>
+                <div layout="column" flex="30"><strong>Name</strong></div>
                 <div layout="column" flex="20"><strong>Status</strong></div>
-                <div layout="column" flex><strong>Comment</strong></div>
+                <div layout="column" flex="30"><strong>Updated</strong></div>
+                <div layout="column" hide-sm flex><strong>Comment</strong></div>
             </div>
             <div layout="row" layout-align="space-around-center" layout-margin layout-fill ng-repeat="user in userData.inOutUsers">
-                <div layout="column" flex="20">{{user.name}} ({{user.handle}})</div>
+                <div layout="column" flex="30">{{user.name}} ({{user.handle}})</div>
                 <div layout="column" flex="20">{{user.inOutBoardStatus}}</div>
-                <div layout="column" flex>{{user.comment}}</div>
+
+                <div layout="row" layout-sm="column" flex="30">
+                    <div flex>{{user.lastUpdated|date:'H:mm'}}</div>
+                    <div flex>{{user.comment}}</div>
+                </div>
             </div>
         </div>
         <div class="git-hub-link-visibility">

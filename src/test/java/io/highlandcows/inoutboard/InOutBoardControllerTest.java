@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -177,7 +178,8 @@ public class InOutBoardControllerTest extends AbstractControllerTest {
         readAndVerifyUserStatusUpdateMessage(new String((byte[])reply.getPayload(), Charset.forName("UTF-8")),
                                              TEST_HANDLE1, InOutBoardStatus.REGISTERED.getDescription(), "");
 
-        UserStatusUpdateMessage newStatus = new UserStatusUpdateMessage(TEST_HANDLE1, TEST_HANDLE1, InOutBoardStatus.AVAILABLE, "At my desk");
+        UserStatusUpdateMessage newStatus = new UserStatusUpdateMessage(TEST_HANDLE1, TEST_HANDLE1, InOutBoardStatus.AVAILABLE, "At my desk",
+                                                                        LocalDateTime.now());
 
         String payload = new String(new ObjectMapper().writeValueAsBytes(newStatus));
         mockMvc.perform(post("/inoutboard-rest/user-status-update").contentType(contentType).content(payload)).andExpect(status().isOk());

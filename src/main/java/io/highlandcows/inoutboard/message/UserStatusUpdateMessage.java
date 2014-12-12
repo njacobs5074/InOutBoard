@@ -6,6 +6,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 /**
  * @author highlandcows
  * @since 10/11/14
@@ -17,13 +21,16 @@ public class UserStatusUpdateMessage extends Message {
 
     private String comment;
 
+    private LocalDateTime lastUpdated;
+
     public UserStatusUpdateMessage() {}
 
-    public UserStatusUpdateMessage(String userHandle, String name, InOutBoardStatus inOutBoardStatus, String comment) {
+    public UserStatusUpdateMessage(String userHandle, String name, InOutBoardStatus inOutBoardStatus, String comment, LocalDateTime lastUpdated) {
         super(userHandle);
         this.name = name;
         this.inOutBoardStatus = inOutBoardStatus;
         this.comment = StringUtils.isBlank(comment) ? "" : comment;
+        this.lastUpdated = lastUpdated;
     }
 
 
@@ -38,6 +45,14 @@ public class UserStatusUpdateMessage extends Message {
     public String getComment() { return comment; }
 
     public void setComment(String comment) { this.comment = comment; }
+
+    public long getLastUpdated() {
+        return lastUpdated.toInstant(ZoneOffset.UTC).toEpochMilli();
+    }
+
+    public void setLastUpdated(long millis) {
+        this.lastUpdated = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC);
+    }
 
     @Override
     public int hashCode() {

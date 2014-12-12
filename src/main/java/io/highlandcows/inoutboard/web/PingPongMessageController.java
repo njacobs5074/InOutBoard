@@ -13,6 +13,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 /**
+ * Controller that pings all clients every 5 seconds by sending a message via STOMP
+ * to the topic, '/topic/ping'.  It also handles the response on the '/pong' topic.
+ *
+ * NB: This class logs sent & received messages at the TRACE level.
+ *
  * @author highlandcows
  * @since 10/12/14
  */
@@ -33,7 +38,7 @@ public class PingPongMessageController {
         try {
             PingMessage pingMessage = new PingMessage();
             stompMessagingTemplate.convertAndSend("/topic/ping", pingMessage);
-            logger.info("Sent '/topic/ping: " + pingMessage);
+            logger.trace("Sent '/topic/ping: " + pingMessage);
         }
         catch (Exception e) {
             logger.error(e);

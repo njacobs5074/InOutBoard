@@ -13,7 +13,7 @@ html, body {
 
 /* Turn this on for the debug panel in the main page. */
 .debug-visibility {
-  visibility: hidden;
+  visibility: visible;
 }
 
 .ribbon-visibility {

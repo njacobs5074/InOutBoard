@@ -67,7 +67,8 @@ public class InOutBoardController {
                 inOutBoardUserDatabase.addUser(user);
                 logger.info("User added: " + inOutBoardUserDatabase.getUser(user.getHandle()));
 
-                broadcastUserStatus(new UserStatusUpdateMessage(user.getHandle(), user.getName(), user.getStatus(), user.getComment()));
+                broadcastUserStatus(new UserStatusUpdateMessage(user.getHandle(), user.getName(), user.getStatus(), user.getComment(),
+                                                                user.getLastUpdated()));
             }
         }
         catch (Exception e) {
@@ -92,7 +93,7 @@ public class InOutBoardController {
         try {
             InOutBoardUser user = inOutBoardUserDatabase.getUser(handle);
             if (user != null) {
-                return new UserStatusUpdateMessage(user.getHandle(), user.getName(), user.getStatus(), user.getComment());
+                return new UserStatusUpdateMessage(user.getHandle(), user.getName(), user.getStatus(), user.getComment(), user.getLastUpdated());
             }
         }
         catch (Exception e) {
@@ -117,7 +118,8 @@ public class InOutBoardController {
             InOutBoardUser user = inOutBoardUserDatabase.getUser(handle);
             if (user != null) {
                 inOutBoardUserDatabase.deleteUser(user);
-                broadcastUserStatus(new UserStatusUpdateMessage(user.getHandle(), user.getName(), InOutBoardStatus.UNREGISTERED, ""));
+                broadcastUserStatus(new UserStatusUpdateMessage(user.getHandle(), user.getName(), InOutBoardStatus.UNREGISTERED, "",
+                                                                user.getLastUpdated()));
                 logger.info("unregisterUser unregistered: " + handle);
             }
         }
@@ -149,7 +151,9 @@ public class InOutBoardController {
                 inOutBoardUserDatabase.updateUser(user,
                                                   userStatusUpdateMessage.getInOutBoardStatus(),
                                                   userStatusUpdateMessage.getComment());
-                broadcastUserStatus(userStatusUpdateMessage);
+                user = inOutBoardUserDatabase.getUser(userStatusUpdateMessage.getHandle());
+                broadcastUserStatus(new UserStatusUpdateMessage(user.getHandle(), user.getName(), user.getStatus(), user.getComment(),
+                                                                user.getLastUpdated()));
             }
             else {
                 httpStatus = HttpStatus.BAD_REQUEST;
@@ -178,7 +182,8 @@ public class InOutBoardController {
                                      .map(user -> new UserStatusUpdateMessage(user.getHandle(),
                                                                               user.getName(),
                                                                               user.getStatus(),
-                                                                              user.getComment()))
+                                                                              user.getComment(),
+                                                                              user.getLastUpdated()))
                                      .toArray(UserStatusUpdateMessage[]::new);
 
     }
