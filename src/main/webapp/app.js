@@ -127,6 +127,7 @@ angular
                             service.userData.inOutUsers[i].inOutBoardStatus = message.inOutBoardStatus;
                             service.userData.inOutUsers[i].name = message.name;
                             service.userData.inOutUsers[i].comment = message.comment;
+                            service.userData.inOutUsers[i].lastUpdated = new Date(message.lastUpdated);
 
                             // Keep track of our own status this way.
                             if (message.handle === service.userData.userInfo.handle) {
@@ -143,7 +144,9 @@ angular
                 if (!foundUser) {
                     if (message.inOutBoardStatus !== 'Unregistered') {
                         console.log('Adding ' + message.handle);
-                        service.userData.inOutUsers.push(message);
+                        var userData = message;
+                        userData.lastUpdated = new Date(message.lastUpdated);
+                        service.userData.inOutUsers.push(userData);
                     }
                 }
 
