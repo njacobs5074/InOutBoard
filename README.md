@@ -19,6 +19,7 @@ Clone this repository.
 * Maven 3
 * NPM
 * Bower
+* MySQL 5.0+ (if desired)
 
 ### Build
 `maven package`
@@ -29,7 +30,13 @@ The Maven script runs `bower install` as part of the build (`generate-sources` p
 
 `java -Dspring.datasource.platform=hsqldb -jar target/in-out-board-app-1.0-SNAPSHOT.war`
 
-Note that the database, currently, is just in memory and will be wiped out each time you restart server.
+or
+
+`java -Dspring.datasource.platform=mysql -jar target/in-out-board-app-1.0-SNAPSHOT.war`
+
+The HSQL database is maintained in memory and will be wiped out on restart.  The MySQL database is, of course,
+persisted but requires that you install MySQL 5.0+.  See the `src/main/resource/schema-mysql.sql` and `src/main/resources/application.properties`
+as you'll likely want to change these.
 
 Once this is running, navigate to `http://localhost:8080`.  You have 3 buttons on the right hand side of
 the screen.  These are:
@@ -41,4 +48,3 @@ the screen.  These are:
 ## Limitations
 1. There is basically no sense of session. So, if you login and then reload the page, the app does not know you've previously
 logged in.
-2. The database, as noted, is in memory.  If you want to clear it, you'll have to restart the server.

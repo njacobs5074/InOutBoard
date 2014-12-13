@@ -21,6 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.11</junit.version>
         <apache-commons-lang3.version>3.0</apache-commons-lang3.version>
+        <jayway-jsonpath.version>1.1.0</jayway-jsonpath.version>
     </properties>
 
     <dependencies>
@@ -84,7 +85,7 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>1.1.0</version>
+            <version>${jayway-jsonpath.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -114,6 +115,12 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
