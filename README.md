@@ -28,15 +28,15 @@ The Maven script runs `bower install` as part of the build (`generate-sources` p
 
 ### Run the Application
 
-`java -Dspring.datasource.platform=hsqldb -jar target/in-out-board-app-1.0-SNAPSHOT.war`
+`java -jar target/in-out-board-app-1.0-SNAPSHOT.war --spring.profiles.active=hsqldb`
 
 or
 
-`java -Dspring.datasource.platform=mysql -jar target/in-out-board-app-1.0-SNAPSHOT.war`
+`java -jar target/in-out-board-app-1.0-SNAPSHOT.war --spring.profiles.active=mysql`
 
 The HSQL database is maintained in memory and will be wiped out on restart.  The MySQL database is, of course,
-persisted but requires that you install MySQL 5.0+.  See the `src/main/resource/schema-mysql.sql` and `src/main/resources/application.properties`
-as you'll likely want to change these.
+persisted but requires that you install MySQL 5.0+.  See the `src/main/resource` directory as you'll probably
+need/want to change the values for your environment.
 
 Once this is running, navigate to `http://localhost:8080`.  You have 3 buttons on the right hand side of
 the screen.  These are:
@@ -46,5 +46,6 @@ the screen.  These are:
 * Logout/Disconnect - Once logged in, you logout.
 
 ## Limitations
-1. There is basically no sense of session. So, if you login and then reload the page, the app does not know you've previously
-logged in.
+* Rudimentary sense of session.  Your login is stored locally and so can be recovered when you relaunch the page.  However, you cannot
+use that same login from another browser (i.e. you launch Chrome, then launch Safari) and perhaps more importantly, you can't access
+that login from another device.
