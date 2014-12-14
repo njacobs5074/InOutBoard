@@ -3,7 +3,7 @@
  * Created by highlandcows on 29/11/14.
  */
 angular
-    .module('InOutBoardApp', ['ngResource', 'ngMaterial'])
+    .module('InOutBoardApp', ['ngResource', 'ngMaterial', 'ngStorage'])
     .factory('InOutBoardStatusValues', function ($resource) {
         return $resource('/inoutboard-rest/user-status-values/');
     })
@@ -67,7 +67,7 @@ angular
         return service;
 
     }])
-    .service('InOutUserService', ['$rootScope', 'InOutBoardStatusValues', 'InOutBoardUsers', 'InOutUpdateService', function ($rootScope, InOutBoardStatusValues, InOutBoardUsers, InOutUpdateService) {
+    .service('InOutUserService', ['$rootScope', '$localStorage', 'InOutBoardStatusValues', 'InOutBoardUsers', 'InOutUpdateService', function ($rootScope, $localStorage, InOutBoardStatusValues, InOutBoardUsers, InOutUpdateService) {
 
         var service = {
             EVENT_ID: 'userData.update',
@@ -83,6 +83,8 @@ angular
                 service.userData.userInfo.name = name;
                 service.userData.userInfo.loggedIn = loggedIn;
                 service.userData.userInfo.inOutBoardStatus = loggedIn ? 'Registered' : 'Unregistered';
+
+                $localStorage.userInfo = service.userData.userInfo;
 
                 $rootScope.$broadcast(service.EVENT_ID);
             }
@@ -103,6 +105,12 @@ angular
             InOutBoardStatusValues.query(function (data) {
                 service.userData.statusValues = data;
             });
+
+            // See if the user has been saved into local storage.  If so,
+            // then initialize from that.
+            if ($localStorage.userInfo) {
+                service.userData.userInfo = $localStorage.userInfo;
+            }
 
             // Register to receive messages - This implementation is tied
             // to the way AngularJS $q promises work.  See the implementation of the
