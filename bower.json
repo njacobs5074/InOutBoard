@@ -1,10 +1,19 @@
 {
   "name": "inout-board",
   "version": "0.1.0",
+  "authors": [
+    "njacobs5074 <nicholas_jacobs@yahoo.com>"
+  ],
   "description": "Simple In/Out Board Implemented Using AngularJS",
   "repository": "https://github.com/njacobs5074/InOutBoard",
   "license": "MIT",
   "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
     "sockjs": "latest",
     "stomp-websocket": "latest",
@@ -13,6 +22,11 @@
     "angular-material": "~0.6.0",
     "angular": "~1.3.5",
     "angular-resource": "~1.3.5",
-    "ngstorage": "~0.3.0"
+    "ngstorage": "~0.3.0",
+    "angular-mocks": "~1.3.7",
+    "jasmine": "~2.1.3"
+  },
+  "resolutions": {
+    "angular": "1.3.7"
   }
 }

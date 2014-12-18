@@ -3,7 +3,7 @@
  * Created by highlandcows on 29/11/14.
  */
 angular
-    .module('InOutBoardApp', ['ngResource', 'ngMaterial', 'ngStorage'])
+    .module('InOutBoardApp', ['ngResource', 'ngMaterial', 'ngStorage', 'ngMock'])
     .factory('InOutBoardStatusValues', function ($resource) {
         return $resource('/inoutboard-rest/user-status-values/');
     })
