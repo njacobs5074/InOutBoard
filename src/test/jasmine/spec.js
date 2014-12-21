@@ -24,11 +24,18 @@ describe('Web Services Mock', function () {
 
     var receivedMessage;
 
+    // Need to manually specify this for tests.
+    beforeEach(function () {
+        module('ngMock');
+    });
+
+    // These are standard AngularJS components that we use.
     beforeEach(inject(function (_$q_, _$rootScope_) {
         $q = _$q_;
         $rootScope = _$rootScope_;
     }));
 
+    // Set up our mock services.
     beforeEach(function () {
         InOutBoardStatusValuesMock = {
             query: function (callback) {
@@ -76,6 +83,7 @@ describe('Web Services Mock', function () {
         localStorageMock.clear();
     });
 
+    // Sanity checks for web service mocks.
     it('InOutBoardStatusValues.query', function () {
         var results = undefined;
         InOutBoardStatusValuesMock.query(function (data) {
@@ -103,11 +111,21 @@ describe('Web Services Mock', function () {
         expect(receivedMessage).not.toBe(undefined);
     });
 
+    // Test a version of the InOutUserService that uses the mock services.
+    // This is arguably the real test of the suite.
     it('InOutUserService.initialize', function () {
         InOutUpdateServiceMock.receive().then(null, null, function (message) {
             receivedMessage = message;
         });
         InOutUpdateServiceMock.mockReceiveMessage(JSON.stringify(mockUserResponse));
-        expect(InOutUserServiceMock.userData).not.toBe(undefined);
+        InOutUserServiceMock.setUserInfo(mockUserResponse.handle, mockUserResponse.name, true);
+
+        expect(InOutUserServiceMock.userData.userInfo.handle).toEqual(mockUserResponse.handle);
+        expect(InOutUserServiceMock.userData.userInfo.name).toEqual(mockUserResponse.name);
+        expect(InOutUserServiceMock.userData.userInfo.loggedIn).toBeTruthy();
+
+        expect(InOutUserServiceMock.userData.inOutUsers[0].handle).toEqual(mockUserResponse.handle);
+        expect(InOutUserServiceMock.userData.inOutUsers[0].name).toEqual(mockUserResponse.name);
+        expect(InOutUserServiceMock.userData.inOutUsers[0].inOutBoardStatus).toEqual('Registered');
     })
 });
