@@ -22,6 +22,10 @@
         <junit.version>4.11</junit.version>
         <apache-commons-lang3.version>3.0</apache-commons-lang3.version>
         <jayway-jsonpath.version>1.1.0</jayway-jsonpath.version>
+
+        <karma.version>0.10.10</karma.version>
+        <karma-jasmine.version>0.1.5</karma-jasmine.version>
+        <karma-chrome-launcher.version>0.1.5</karma-chrome-launcher.version>
     </properties>
 
     <dependencies>
@@ -148,6 +152,23 @@
                             <executable>bower</executable>
                             <arguments>
                                 <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>exec-npm-install</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                                <argument>--save-dev</argument>
+                                <argument>karma@${karma.version}</argument>
+                                <argument>karma-jasmine@${karma-jasmine.version}</argument>
+                                <argument>karma-chrome-launcher@${karma-chrome-launcher.version}</argument>
                             </arguments>
                         </configuration>
                         <goals>

@@ -45,6 +45,12 @@ the screen.  These are:
 * Status - Once you've logged in, you can update your status and comment.
 * Logout/Disconnect - Once logged in, you logout.
 
+### Testing
+For server-side components, I used jUnit and Spring's related annotations.  For the client-side (JavaScript) components, I used
+Karma and Jasmine.  Note that as of this writing, I have only tested the code running in Chrome 39.0.2171.
+
+The versions of the various test frameworks  managed via the `pom.xml`, so you shouldn't need to do anything special to get it to work.
+
 ## Limitations
 * Rudimentary sense of session.  Your login is stored locally and so can be recovered when you relaunch the page.  However, you cannot
 use that same login from another browser (i.e. you launch Chrome, then launch Safari) and perhaps more importantly, you can't access
