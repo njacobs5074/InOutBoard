@@ -22,7 +22,7 @@ Clone this repository.
 * MySQL 5.0+ (if desired)
 
 ### Build
-`maven package`
+`mvn package`
 
 The Maven script runs `bower install` as part of the build (`generate-sources` phase for the interested).
 
@@ -43,7 +43,7 @@ the screen.  These are:
 
 * Login/Connect - Will prompt you for a "handle" and your name.  Both are free-form text.
 * Status - Once you've logged in, you can update your status and comment.
-* Logout/Disconnect - Once logged in, you logout.
+* Logout/Disconnect - Once logged in, you can logout should you so desire..
 
 ### Testing
 For server-side components, I used jUnit and Spring's related annotations.  For the client-side (JavaScript) components, I used
