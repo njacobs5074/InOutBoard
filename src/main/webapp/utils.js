@@ -2,9 +2,6 @@
 /**
  * Created by highlandcows on 06/12/14.
  */
-/**
- * Created by highlandcows on 28/11/14.
- */
 Function.prototype.method = function(name, func) {
     if (!this.prototype[name]) {
         this.prototype[name] = func;

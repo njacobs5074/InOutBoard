@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Created by highlandcows on 07/12/14.
  */
@@ -31,7 +32,7 @@ function HandleLoginDialogController($scope, $mdDialog, $mdToast, InOutBoardUser
     };
 
     var unsuccessfulLogin = function (reason) {
-        $mdToast.show($mdToast.simple().content('Failed to login: ' + reason.statusText + ' (' + reason.status + ')'));;
+        $mdToast.show($mdToast.simple().content('Failed to login: ' + reason.statusText + ' (' + reason.status + ')'));
     };
 
     $scope.cancelLoginDialog = function () {
