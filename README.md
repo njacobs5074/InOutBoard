@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/njacobs5074/InOutBoard.svg?branch=master)](https://travis-ci.org/njacobs5074/InOutBoard)
 # InOutBoard - Simple In/Out Board App
 
 This application implementation of an "in/out board" - a 20th century device that people used in offices to record
@@ -11,7 +12,7 @@ This initial version is web-based - the next iteration will provide an Android a
 
 ## Getting Started
 
-Clone this repository.
+Clone/fork this repository.
 
 ### Prerequisites
 
