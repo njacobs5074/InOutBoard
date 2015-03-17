@@ -4,12 +4,3 @@ jdk:
 before_install:
   - npm install -g bower
   - bower install
-language: java
-jdk:
-  - oraclejdk8
-before_install:
-  - npm install -g bower
-  - bower install
-install: true
-before_script: "mvn --settings ./.travis.maven-settings.xml clean"
-script: "mvn --settings ./.travis.maven-settings.xml test"
