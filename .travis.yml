@@ -1,6 +1,6 @@
-install:
+language: java
+before_install:
   - npm install -g bower
   - bower install
-language: java
-install: "mvn --settings ./.travis.maven-settings.xml clean"
+before_script: "mvn --settings ./.travis.maven-settings.xml clean"
 script: "mvn --settings ./.travis.maven-settings.xml test"
