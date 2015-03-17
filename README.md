@@ -12,7 +12,7 @@ This initial version is web-based - the next iteration will provide an Android a
 
 ## Getting Started
 
-Clone this repository.
+Clone/fork this repository.
 
 ### Prerequisites
 
