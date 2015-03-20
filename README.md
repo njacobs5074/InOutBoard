@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/njacobs5074/InOutBoard.svg?branch=master)](https://travis-ci.org/njacobs5074/InOutBoard)
+[![Codacy Badge](https://www.codacy.com/project/badge/008a969a845f495994c2ea473f786eb7)](https://www.codacy.com/public/nick_3/InOutBoard)
 # InOutBoard - Simple In/Out Board App #
 
 This application implements an "in/out board" - a 20th century device that people used in offices to record
