@@ -66,7 +66,8 @@ describe('Web Services Mock', function () {
                 return storage[key];
             },
             setItem: function (key, value) {
-                return storage[key] = value + '';
+                storage[key] = value + '';
+                return storage[key];
             },
             clear: function () {
                 storage = {};

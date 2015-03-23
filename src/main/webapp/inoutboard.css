@@ -29,9 +29,6 @@ html, body {
     font-size: 12px;
   }
 
-  body {
-  }
-
   .ribbon-visibility {
     visibility: hidden;
   }
@@ -40,7 +37,7 @@ html, body {
     visibility: visible;
   }
 
-  h1.title {
+    h1 {
     font-size: 27px;
     margin-top: 15px;
   }
