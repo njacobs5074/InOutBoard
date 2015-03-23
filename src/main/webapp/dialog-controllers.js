@@ -8,8 +8,6 @@
  */
 function InOutBoardLoginDialogController($scope, $mdDialog, InOutBoardUser, InOutUserService) {
 
-    $scope.showLoginDialog = showLoginDialog;
-
     function showLoginDialog(event) {
         $mdDialog.show({
             targetEvent: event,
@@ -18,6 +16,8 @@ function InOutBoardLoginDialogController($scope, $mdDialog, InOutBoardUser, InOu
             locals: {InOutBoardUser: InOutBoardUser, InOutUserService: InOutUserService}
         })
     }
+
+    $scope.showLoginDialog = showLoginDialog;
 }
 
 /**
@@ -56,8 +56,6 @@ function HandleLoginDialogController($scope, $mdDialog, $mdToast, InOutBoardUser
  */
 function InOutBoardLogoutDialogController($scope, $mdDialog, $mdToast, InOutBoardUser, InOutUserService) {
 
-    $scope.showLogoutDialog = showLogoutDialog;
-
     function showLogoutDialog(event) {
 
         var confirm = $mdDialog.confirm()
@@ -75,6 +73,8 @@ function InOutBoardLogoutDialogController($scope, $mdDialog, $mdToast, InOutBoar
         });
 
     }
+
+    $scope.showLogoutDialog = showLogoutDialog;
 }
 
 /**
