@@ -1,24 +1,8 @@
 'use strict';
 /**
- * Created by highlandcows on 07/12/14.
+ * @author highlandcows
+ * @since 07/12/14
  */
-/**
- * Controller for the login dialog. Basically we just expose a method
- * that displays the login-dialog-content.html in a dialog panel.
- */
-function InOutBoardLoginDialogController($scope, $mdDialog, InOutBoardUser, InOutUserService) {
-
-    function showLoginDialog(event) {
-        $mdDialog.show({
-            targetEvent: event,
-            templateUrl: 'login-dialog-content.html',
-            controller: HandleLoginDialogController,
-            locals: {InOutBoardUser: InOutBoardUser, InOutUserService: InOutUserService}
-        })
-    }
-
-    $scope.showLoginDialog = showLoginDialog;
-}
 
 /**
  * Controller class that handles the user's interaction with the login dialog - see above.
@@ -51,6 +35,24 @@ function HandleLoginDialogController($scope, $mdDialog, $mdToast, InOutBoardUser
 }
 
 /**
+ * Controller for the login dialog. Basically we just expose a method
+ * that displays the login-dialog-content.html in a dialog panel.
+ */
+function InOutBoardLoginDialogController($scope, $mdDialog, InOutBoardUser, InOutUserService) {
+
+    function showLoginDialog(event) {
+        $mdDialog.show({
+            targetEvent: event,
+            templateUrl: 'login-dialog-content.html',
+            controller: HandleLoginDialogController,
+            locals: {InOutBoardUser: InOutBoardUser, InOutUserService: InOutUserService}
+        })
+    }
+
+    $scope.showLoginDialog = showLoginDialog;
+}
+
+/**
  * Controller that manages a dialog that allows the user to disconnect from the app.  Since this is
  * basically a yes/no question, we can use a confirm dialog.
  */
@@ -77,23 +79,6 @@ function InOutBoardLogoutDialogController($scope, $mdDialog, $mdToast, InOutBoar
     $scope.showLogoutDialog = showLogoutDialog;
 }
 
-/**
- * Controller for update status dialog.  Basically we just expose a method that displays the
- * status-dialog-content.html in a dialog panel.
- */
-function InOutBoardStatusUpdateDialogController($scope, $mdDialog, InOutUserService, InOutBoardUserStatus) {
-    $scope.showStatusUpdateDialog = showStatusUpdateDialog;
-
-    function showStatusUpdateDialog(event) {
-        $mdDialog.show({
-            targetEvent: event,
-            templateUrl: 'status-dialog-content.html',
-            controller: HandleStatusUpdateDialogController,
-            locals: {InOutUserService: InOutUserService, InOutBoardUser: InOutBoardUserStatus}
-        })
-    }
-}
-
 function HandleStatusUpdateDialogController($scope, $mdDialog, $mdToast, InOutUserService, InOutBoardUserStatus) {
 
     $scope.statusValues = InOutUserService.userData.statusValues;
@@ -115,6 +100,23 @@ function HandleStatusUpdateDialogController($scope, $mdDialog, $mdToast, InOutUs
         }).$promise.then(successfulUpdate);
 
         $mdDialog.hide();
+    }
+}
+
+/**
+ * Controller for update status dialog.  Basically we just expose a method that displays the
+ * status-dialog-content.html in a dialog panel.
+ */
+function InOutBoardStatusUpdateDialogController($scope, $mdDialog, InOutUserService, InOutBoardUserStatus) {
+    $scope.showStatusUpdateDialog = showStatusUpdateDialog;
+
+    function showStatusUpdateDialog(event) {
+        $mdDialog.show({
+            targetEvent: event,
+            templateUrl: 'status-dialog-content.html',
+            controller: HandleStatusUpdateDialogController,
+            locals: {InOutUserService: InOutUserService, InOutBoardUser: InOutBoardUserStatus}
+        })
     }
 }
 
